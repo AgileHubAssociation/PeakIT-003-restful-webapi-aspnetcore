@@ -39,7 +39,7 @@ namespace LearningQ.API.Controllers
         }
 
         // api/queue/5
-        [HttpGet("{queueId}")]
+        [HttpGet("{queueId:int:min(1)}")]
         public ActionResult<QueueRead> GetQueue(int queueId)
         {
             var queueFromRepo = _repo.GetQueueById(queueId);
@@ -69,7 +69,7 @@ namespace LearningQ.API.Controllers
         }
 
         // api/queue/5
-        [HttpPut("{queueId}")]
+        [HttpPut("{queueId:int:min(1)}")]
         public ActionResult UpdateQueue(int queueId, QueueUpdate queue)
         {
             var queueFromRepo = _repo.GetQueueById(queueId);
@@ -88,7 +88,7 @@ namespace LearningQ.API.Controllers
         }
 
         // api/queue/5/items
-        [HttpPut("{queueId}/includeItems")]
+        [HttpPut("{queueId:int:min(1)}/includeItems")]
         public ActionResult UpdateQueueWithItems([FromRoute] int queueId, QueueUpdateWithItems queue)
         {
             var queueFromRepo = _repo.GetQueueById(queueId);
@@ -107,7 +107,7 @@ namespace LearningQ.API.Controllers
         }
 
         // api/queue/5/items
-        [HttpPatch("{queueId}")]
+        [HttpPatch("{queueId:int:min(1)}")]
         public ActionResult PartialUpdateQueue([FromRoute] int queueId,  JsonPatchDocument<QueueUpdate> patchDoc)
         {
             var queueFromRepo = _repo.GetQueueById(queueId);
@@ -135,7 +135,7 @@ namespace LearningQ.API.Controllers
         }
 
         // api/queue/5
-        [HttpDelete("{queueId}")]
+        [HttpDelete("{queueId:int:min(1)}")]
         public ActionResult DeleteQueue(int queueId)
         {
             var queueFromRepo = _repo.GetQueueById(queueId);

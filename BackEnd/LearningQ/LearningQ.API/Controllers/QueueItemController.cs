@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LearningQ.API.Controllers
 {
     [ApiController]
-    [Route("api/queue/{queueId}/item")]
+    [Route("api/queue/{queueId:int:min(1)}/item")]
     [Consumes("application/json")]
     [Produces("application/json")]
     public class ItemController : ControllerBase
@@ -43,7 +43,7 @@ namespace LearningQ.API.Controllers
         }
 
         // api/queue/5/item/7 
-        [HttpGet("{itemId}")]
+        [HttpGet("{itemId:int:min(1)}")]
         public ActionResult<ItemRead> GetItem(int queueId, int itemId)
         {
             var queueFromRepo = _repo.GetQueueById(queueId);
@@ -87,7 +87,7 @@ namespace LearningQ.API.Controllers
         }
 
         // api/queue/5/item/7 
-        [HttpPut("{itemId}")]
+        [HttpPut("{itemId:int:min(1)}")]
         public ActionResult UpdateItem(int queueId, int itemId, ItemUpdate item)
         {
             var queueFromRepo = _repo.GetQueueById(queueId);
@@ -113,7 +113,7 @@ namespace LearningQ.API.Controllers
         }
 
         // api/queue/5/item/7 
-        [HttpPatch("{itemId}")]
+        [HttpPatch("{itemId:int:min(1)}")]
         public ActionResult PartialUpdateIem(int queueId, int itemId, JsonPatchDocument<ItemUpdate> patchDoc)
         {
             var queueFromRepo = _repo.GetQueueById(queueId);
@@ -148,7 +148,7 @@ namespace LearningQ.API.Controllers
         }
 
         // api/queue/5/item/7
-        [HttpDelete("{itemId}")]
+        [HttpDelete("{itemId:int:min(1)}")]
         public ActionResult DeleteQueue(int queueId, int itemId)
         {
             var queueFromRepo = _repo.GetQueueById(queueId);
