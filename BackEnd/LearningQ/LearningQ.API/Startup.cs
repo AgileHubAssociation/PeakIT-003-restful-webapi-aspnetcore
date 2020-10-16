@@ -1,3 +1,5 @@
+using System;
+using AutoMapper;
 using LearningQ.DAL.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -22,6 +24,9 @@ namespace LearningQ.API
             services.AddControllers();
 
             services.AddSingleton<IRepository, MockRepository>();
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

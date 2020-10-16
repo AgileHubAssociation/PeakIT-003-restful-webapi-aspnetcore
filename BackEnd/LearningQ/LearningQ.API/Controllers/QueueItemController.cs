@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using LearningQ.BL.DTOs.Item;
 using LearningQ.BL.Models;
 using LearningQ.DAL.Repository;
@@ -13,10 +14,12 @@ namespace LearningQ.API.Controllers
     {
         // read-only fields can only be assigned inside constructors
         private readonly IRepository _repo;
+        private readonly IMapper _mapper;
 
-        public ItemController(IRepository repo) // constructor dependency injection
+        public ItemController(IRepository repo, IMapper mapper) // constructor dependency injection
         {
             _repo = repo;
+            _mapper = mapper;
         }
 
         // api/queue/5/item
@@ -32,19 +35,7 @@ namespace LearningQ.API.Controllers
             
             var allItemFromQueueRepo = _repo.GetAllItemsFromQueue(queueId);
 
-
-            var itemsFromQueForDisplay =
-                allItemFromQueueRepo
-                    .Select(t => new ItemRead
-                    {
-                        Id = t.Id,
-                        Name = t.Name,
-                        Description = t.Description,
-                        Difficulty = t.Difficulty,
-                        URL = t.URL,
-                    })
-                    .ToList();
-
+            var itemsFromQueForDisplay = _mapper.Map<IEnumerable<ItemRead>>(allItemFromQueueRepo);
 
             return Ok(itemsFromQueForDisplay);
         }
@@ -67,18 +58,7 @@ namespace LearningQ.API.Controllers
                 return NotFound();
             }
 
-            var itemFromQueueForDisplay = new ItemRead
-            {
-                Id = itemFromQueueRepo.Id,
-                Name = itemFromQueueRepo.Name,
-                Description = itemFromQueueRepo.Description,
-                CreateDate = itemFromQueueRepo.CreateDate,
-                ModifiedDate = itemFromQueueRepo.ModifiedDate,
-                Difficulty = itemFromQueueRepo.Difficulty,
-                Priority = itemFromQueueRepo.Priority,
-                Progress = itemFromQueueRepo.Progress,
-                URL = itemFromQueueRepo.URL,
-            };
+            var itemFromQueueForDisplay = _mapper.Map<ItemRead>(itemFromQueueRepo);
 
             return Ok(itemFromQueueForDisplay);
         }
@@ -94,18 +74,7 @@ namespace LearningQ.API.Controllers
                 return NotFound();
             }
 
-            var itemToAdd = new Item
-            {
-                Name = item.Name,
-                CreateDate = item.CreateDate,
-                ModifiedDate = item.ModifiedDate,
-                Description = item.Description,
-                URL = item.URL,
-                Priority = item.Priority,
-                Progress = item.Progress,
-                Difficulty = item.Difficulty
-
-            };
+            var itemToAdd = _mapper.Map<Item>(item); // destination <- source
 
             _repo.AddItemInQueue(queueId, itemToAdd);
 
@@ -130,11 +99,7 @@ namespace LearningQ.API.Controllers
                 return NotFound();
             }
 
-            itemFromQueueRepo.Name = item.Name;
-            itemFromQueueRepo.Description = item.Description;
-            itemFromQueueRepo.ModifiedDate = item.ModifiedDate;
-            itemFromQueueRepo.Priority = item.Priority;
-            itemFromQueueRepo.Progress = item.Progress;
+            _mapper.Map(item, itemFromQueueRepo); //source -> destination
 
             _repo.UpdateItemInQueue(queueId, itemFromQueueRepo);
 

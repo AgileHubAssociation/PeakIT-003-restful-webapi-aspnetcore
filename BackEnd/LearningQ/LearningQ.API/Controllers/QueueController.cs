@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using LearningQ.BL.DTOs.Item;
+using AutoMapper;
 using LearningQ.BL.DTOs.Queue;
 using Microsoft.AspNetCore.Mvc;
 using LearningQ.BL.Models;
@@ -16,11 +15,14 @@ namespace LearningQ.API.Controllers
 
         // read-only fields can only be assigned inside constructors
         private readonly IRepository _repo;
+        private readonly IMapper _mapper;
 
-        public QueueController(IRepository repo) // constructor dependency injection
+        public QueueController(IRepository repo, IMapper mapper) // constructor dependency injection
         {
             _repo = repo;
+            _mapper = mapper;
         }
+
 
         // api/queue
         [HttpGet]
@@ -28,27 +30,7 @@ namespace LearningQ.API.Controllers
         {
             var queuesFromRepo = _repo.GetAllQueues();
 
-            var queuesForDisplay = queuesFromRepo.Select(t => new QueueRead
-            {
-                Id = t.Id,
-                Description = t.Description,
-                CreateDate = t.CreateDate,
-                ModifiedDate = t.ModifiedDate,
-                Name = t.Name,
-                Items = t.Items.Select(t => new ItemRead
-                {
-                    Id = t.Id,
-                    Name = t.Name,
-                    Description = t.Description,
-                    Difficulty = t.Difficulty,
-                    URL = t.URL,
-                    Priority = t.Priority,
-                    Progress = t.Progress,
-                    CreateDate = t.CreateDate,
-                    ModifiedDate = t.ModifiedDate,
-                }).ToList()
-            }).ToList();
-
+            var queuesForDisplay = _mapper.Map<IEnumerable<QueueRead>>(queuesFromRepo);
 
             return Ok(queuesForDisplay);
         }
@@ -64,29 +46,7 @@ namespace LearningQ.API.Controllers
                 return NotFound();
             }
 
-            var queForDisplay = new QueueRead
-            {
-                Id = queueFromRepo.Id,
-                Name = queueFromRepo.Name,
-                CreateDate = queueFromRepo.CreateDate,
-                ModifiedDate = queueFromRepo.ModifiedDate,
-                Description = queueFromRepo.Description,
-                Items = queueFromRepo.Items.Select(t => new ItemRead
-                {
-                    Id = t.Id,
-                    CreateDate = t.CreateDate,
-                    ModifiedDate = t.ModifiedDate,
-                    Name = t.Name,
-                    Description = t.Description,
-                    Difficulty = t.Difficulty,
-                    URL = t.URL,
-                    Priority = t.Priority,
-                    Progress = t.Progress,
-
-                }).ToList()
-
-            };
-
+            var queForDisplay = _mapper.Map<QueueRead>(queueFromRepo);
 
             return Ok(queForDisplay);
         }
@@ -95,24 +55,7 @@ namespace LearningQ.API.Controllers
         [HttpPost]
         public ActionResult CreateQueue(QueueCreate queue) //TODO: return created entity
         {
-
-            var queueToAdd = new Queue
-            {
-                Name = queue.Name,
-                CreateDate = queue.CreateDate,
-                ModifiedDate = queue.ModifiedDate,
-                Description = queue.Description,
-                Items = queue.Items.Select(t => new Item
-                {
-                    Name = t.Name,
-                    Description = t.Description,
-                    Difficulty = t.Difficulty,
-                    URL = t.URL,
-                    Priority = t.Priority,
-                    Progress = t.Progress,
-                }).ToList()
-            };
-
+            var queueToAdd = _mapper.Map<Queue>(queue); // destination <- source
 
             _repo.AddQueue(queueToAdd);
 
@@ -130,9 +73,7 @@ namespace LearningQ.API.Controllers
                 return NotFound();
             }
 
-            queueFromRepo.Name = queue.Name;
-            queueFromRepo.ModifiedDate = queue.ModifiedDate;
-            queueFromRepo.Description = queue.Description;
+            _mapper.Map(queue, queueFromRepo); //source -> destination
 
             _repo.UpdateQueue(queueFromRepo);
 
@@ -150,21 +91,7 @@ namespace LearningQ.API.Controllers
                 return NotFound();
             }
 
-            queueFromRepo.Name = queue.Name;
-            queueFromRepo.ModifiedDate = queue.ModifiedDate;
-            queueFromRepo.Description = queue.Description;
-            queueFromRepo.Items = queue.Items.Select(t => new Item
-            {
-                ModifiedDate = t.ModifiedDate,
-                Name = t.Name,
-                Description = t.Description,
-                Difficulty = t.Difficulty,
-                URL = t.URL,
-                Priority = t.Priority,
-                Progress = t.Progress,
-
-            }).ToList();
-
+            _mapper.Map(queue, queueFromRepo); //source -> destination
 
             _repo.UpdateQueue(queueFromRepo);
 
