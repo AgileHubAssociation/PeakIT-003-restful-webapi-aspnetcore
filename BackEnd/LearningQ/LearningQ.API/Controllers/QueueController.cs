@@ -4,6 +4,7 @@ using LearningQ.BL.DTOs.Queue;
 using Microsoft.AspNetCore.Mvc;
 using LearningQ.BL.Models;
 using LearningQ.DAL.Repository;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace LearningQ.API.Controllers
 {
@@ -101,7 +102,33 @@ namespace LearningQ.API.Controllers
             return NoContent();
         }
 
-        //TODO: implement PATCH
+        // api/queue/5/items
+        [HttpPatch("{queueId}")]
+        public ActionResult PartialUpdateQueue([FromRoute] int queueId,  JsonPatchDocument<QueueUpdate> patchDoc)
+        {
+            var queueFromRepo = _repo.GetQueueById(queueId);
+
+            if (queueFromRepo == null)
+            {
+                return NotFound();
+            }
+
+            var queueToPatch = _mapper.Map<QueueUpdate>(queueFromRepo);
+
+            patchDoc.ApplyTo(queueToPatch, ModelState);
+
+            if (!TryValidateModel(queueToPatch))
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            _mapper.Map(queueToPatch, queueFromRepo); //source -> destination
+
+            _repo.UpdateQueue(queueFromRepo);
+            _repo.SaveChanges();
+
+            return NoContent();
+        }
 
         // api/queue/5
         [HttpDelete("{queueId}")]
