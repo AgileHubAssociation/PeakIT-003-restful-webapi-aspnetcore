@@ -56,14 +56,16 @@ namespace LearningQ.API.Controllers
 
         // api/queue/
         [HttpPost]
-        public ActionResult CreateQueue(QueueCreate queue) //TODO: return created entity
+        public ActionResult<QueueRead> CreateQueue(QueueCreate queue) //TODO: return created entity
         {
             var queueToAdd = _mapper.Map<Queue>(queue); // destination <- source
 
             _repo.AddQueue(queueToAdd);
             _repo.SaveChanges();
 
-            return NoContent();
+            var queueReadDto = _mapper.Map<QueueRead>(queueToAdd);
+
+            return CreatedAtRoute(nameof(GetQueue), new { queueId = queueReadDto.Id }, queueReadDto);
         }
 
         // api/queue/5

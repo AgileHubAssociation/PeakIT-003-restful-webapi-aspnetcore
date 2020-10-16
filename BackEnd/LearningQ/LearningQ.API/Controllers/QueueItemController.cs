@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using AutoMapper;
 using LearningQ.BL.DTOs.Item;
 using LearningQ.BL.Models;
@@ -68,7 +67,7 @@ namespace LearningQ.API.Controllers
 
         // api/queue/5/item/
         [HttpPost]
-        public ActionResult CreateItem(int queueId, ItemCreate item) //TODO: return created entity
+        public ActionResult<ItemRead> CreateItem(int queueId, ItemCreate item) //TODO: return created entity
         {
             var queueFromRepo = _repo.GetQueueById(queueId);
 
@@ -82,7 +81,9 @@ namespace LearningQ.API.Controllers
             _repo.AddItemInQueue(queueId, itemToAdd);
             _repo.SaveChanges();
 
-            return NoContent();
+            var itemReadDto = _mapper.Map<ItemRead>(itemToAdd);
+            
+            return CreatedAtRoute(nameof(GetItem), new {queueId = itemReadDto.Id, itemId = itemReadDto.Id}, itemReadDto);
         }
 
         // api/queue/5/item/7 
