@@ -1,5 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
+using LearningQ.BL.DTOs.Item;
 using LearningQ.BL.Models;
 using LearningQ.DAL.Repository;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,7 @@ namespace LearningQ.API.Controllers
 
         // api/queue/5/item
         [HttpGet]
-        public ActionResult<IEnumerable<Item>> GetItems(int queueId)
+        public ActionResult<IEnumerable<ItemRead>> GetItems(int queueId)
         {
             var queueFromRepo = _repo.GetQueueById(queueId);
 
@@ -28,15 +29,29 @@ namespace LearningQ.API.Controllers
             {
                 return NotFound();
             }
-
+            
             var allItemFromQueueRepo = _repo.GetAllItemsFromQueue(queueId);
 
-            return Ok(allItemFromQueueRepo);
+
+            var itemsFromQueForDisplay =
+                allItemFromQueueRepo
+                    .Select(t => new ItemRead
+                    {
+                        Id = t.Id,
+                        Name = t.Name,
+                        Description = t.Description,
+                        Difficulty = t.Difficulty,
+                        URL = t.URL,
+                    })
+                    .ToList();
+
+
+            return Ok(itemsFromQueForDisplay);
         }
 
         // api/queue/5/item/7 
         [HttpGet("{itemId}")]
-        public ActionResult GetItem(int queueId, int itemId)
+        public ActionResult<ItemRead> GetItem(int queueId, int itemId)
         {
             var queueFromRepo = _repo.GetQueueById(queueId);
 
@@ -52,12 +67,25 @@ namespace LearningQ.API.Controllers
                 return NotFound();
             }
 
-            return Ok(itemFromQueueRepo);
+            var itemFromQueueForDisplay = new ItemRead
+            {
+                Id = itemFromQueueRepo.Id,
+                Name = itemFromQueueRepo.Name,
+                Description = itemFromQueueRepo.Description,
+                CreateDate = itemFromQueueRepo.CreateDate,
+                ModifiedDate = itemFromQueueRepo.ModifiedDate,
+                Difficulty = itemFromQueueRepo.Difficulty,
+                Priority = itemFromQueueRepo.Priority,
+                Progress = itemFromQueueRepo.Progress,
+                URL = itemFromQueueRepo.URL,
+            };
+
+            return Ok(itemFromQueueForDisplay);
         }
 
         // api/queue/5/item/
         [HttpPost]
-        public ActionResult CreateItem(int queueId, Item item) //TODO: return created entity
+        public ActionResult CreateItem(int queueId, ItemCreate item) //TODO: return created entity
         {
             var queueFromRepo = _repo.GetQueueById(queueId);
 
@@ -66,14 +94,27 @@ namespace LearningQ.API.Controllers
                 return NotFound();
             }
 
-            _repo.AddItemInQueue(queueId, item);
+            var itemToAdd = new Item
+            {
+                Name = item.Name,
+                CreateDate = item.CreateDate,
+                ModifiedDate = item.ModifiedDate,
+                Description = item.Description,
+                URL = item.URL,
+                Priority = item.Priority,
+                Progress = item.Progress,
+                Difficulty = item.Difficulty
+
+            };
+
+            _repo.AddItemInQueue(queueId, itemToAdd);
 
             return NoContent();
         }
 
         // api/queue/5/item/7 
         [HttpPut("{itemId}")]
-        public ActionResult UpdateItem(int queueId, int itemId, Item item)
+        public ActionResult UpdateItem(int queueId, int itemId, ItemUpdate item)
         {
             var queueFromRepo = _repo.GetQueueById(queueId);
 
@@ -89,7 +130,13 @@ namespace LearningQ.API.Controllers
                 return NotFound();
             }
 
-            _repo.UpdateItemInQueue(queueId, item);
+            itemFromQueueRepo.Name = item.Name;
+            itemFromQueueRepo.Description = item.Description;
+            itemFromQueueRepo.ModifiedDate = item.ModifiedDate;
+            itemFromQueueRepo.Priority = item.Priority;
+            itemFromQueueRepo.Progress = item.Progress;
+
+            _repo.UpdateItemInQueue(queueId, itemFromQueueRepo);
 
             return NoContent();
         }
