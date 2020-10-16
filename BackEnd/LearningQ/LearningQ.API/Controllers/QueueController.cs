@@ -58,6 +58,7 @@ namespace LearningQ.API.Controllers
             var queueToAdd = _mapper.Map<Queue>(queue); // destination <- source
 
             _repo.AddQueue(queueToAdd);
+            _repo.SaveChanges();
 
             return NoContent();
         }
@@ -76,6 +77,7 @@ namespace LearningQ.API.Controllers
             _mapper.Map(queue, queueFromRepo); //source -> destination
 
             _repo.UpdateQueue(queueFromRepo);
+            _repo.SaveChanges();
 
             return NoContent();
         }
@@ -94,6 +96,7 @@ namespace LearningQ.API.Controllers
             _mapper.Map(queue, queueFromRepo); //source -> destination
 
             _repo.UpdateQueue(queueFromRepo);
+            _repo.SaveChanges();
 
             return NoContent();
         }
@@ -112,6 +115,7 @@ namespace LearningQ.API.Controllers
             }
 
             _repo.DeleteQueue(queueFromRepo);
+            _repo.SaveChanges();
 
             return NoContent();
         }
