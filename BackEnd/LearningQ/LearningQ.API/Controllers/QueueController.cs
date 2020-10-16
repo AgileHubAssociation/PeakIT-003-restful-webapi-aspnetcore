@@ -10,6 +10,8 @@ namespace LearningQ.API.Controllers
 
     [ApiController]
     [Route("api/queue")]
+    [Consumes("application/json")]
+    [Produces("application/json")]
     public class QueueController : ControllerBase
     {
 
