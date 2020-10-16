@@ -33,6 +33,8 @@ namespace LearningQ.API
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+            services.AddSwaggerGen();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,6 +45,17 @@ namespace LearningQ.API
                 app.UseDeveloperExceptionPage();
                 dbContext.Database.EnsureCreated(); // in case we switch branch in loose the DB
             }
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            // by default it can be accessed via the /swagger route
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "LeaningQ V1");
+            });
 
             app.UseRouting();
 
