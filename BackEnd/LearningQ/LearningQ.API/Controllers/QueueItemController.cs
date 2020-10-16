@@ -43,7 +43,7 @@ namespace LearningQ.API.Controllers
         }
 
         // api/queue/5/item/7 
-        [HttpGet("{itemId}")]
+        [HttpGet("{itemId}", Name = nameof(GetItem))]
         public ActionResult<ItemRead> GetItem(int queueId, int itemId)
         {
             var queueFromRepo = _repo.GetQueueById(queueId);
@@ -67,7 +67,7 @@ namespace LearningQ.API.Controllers
 
         // api/queue/5/item/
         [HttpPost]
-        public ActionResult<ItemRead> CreateItem(int queueId, ItemCreate item) //TODO: return created entity
+        public ActionResult<ItemRead> CreateItem(int queueId, ItemCreate item)
         {
             var queueFromRepo = _repo.GetQueueById(queueId);
 
