@@ -15,10 +15,10 @@ namespace LearningQ.BL.DTOs.Queue
         [JsonIgnore]
         public DateTime ModifiedDate { get; set; }
 
-        //[JsonIgnore]
+        [JsonIgnore]
         public TimeSpan CreateAgo => DateTime.Now.Subtract(CreateDate);
 
-        //[JsonIgnore]
+        [JsonIgnore]
         public TimeSpan ModifiedAgo => DateTime.Now.Subtract(ModifiedDate);
 
         public string Name { get; set; }
