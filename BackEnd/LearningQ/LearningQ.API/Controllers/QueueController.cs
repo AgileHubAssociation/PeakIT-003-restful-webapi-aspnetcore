@@ -39,7 +39,7 @@ namespace LearningQ.API.Controllers
         }
 
         // api/queue/5
-        [HttpGet("{queueId}")]
+        [HttpGet("{queueId}", Name = nameof(GetQueue))]
         public ActionResult<QueueRead> GetQueue(int queueId)
         {
             var queueFromRepo = _repo.GetQueueById(queueId);
@@ -56,7 +56,7 @@ namespace LearningQ.API.Controllers
 
         // api/queue/
         [HttpPost]
-        public ActionResult<QueueRead> CreateQueue(QueueCreate queue) //TODO: return created entity
+        public ActionResult<QueueRead> CreateQueue(QueueCreate queue)
         {
             var queueToAdd = _mapper.Map<Queue>(queue); // destination <- source
 
