@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections;
+using System.Collections.Generic;
+using LearningQ.BL.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace LearningQ.API.Controllers
 {
@@ -9,28 +12,33 @@ namespace LearningQ.API.Controllers
 
         // api/queue/5/item
         [HttpGet]
-        public ActionResult GetItems(int queueId)
+        public ActionResult<IEnumerable<Item>> GetItems(int queueId)
         {
-            return Ok($"all item from queue {queueId}");
+            var result = new List<Item>();
+
+            return Ok(result);
         }
 
         // api/queue/5/item/7 
         [HttpGet("{itemId}")]
         public ActionResult GetItem(int queueId, int itemId)
         {
-            return Ok($"item {itemId} from queue {queueId}");
+            
+            var result = new Item();
+
+            return Ok(result);
         }
 
         // api/queue/5/item/
         [HttpPost]
-        public ActionResult CreateItem(int queueId, object item) //TODO: return created entity
+        public ActionResult CreateItem(int queueId, Item item) //TODO: return created entity
         {
             return NoContent();
         }
 
         // api/queue/5/item/7 
         [HttpPut("{itemId}")]
-        public ActionResult UpdateItem(int queueId, int itemId, object item)
+        public ActionResult UpdateItem(int queueId, int itemId, Item item)
         {
             return NoContent();
         }

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
+using LearningQ.BL.Models;
 
 namespace LearningQ.API.Controllers
 {
@@ -10,35 +12,39 @@ namespace LearningQ.API.Controllers
 
         // api/queue
         [HttpGet]
-        public ActionResult GetQueues()
+        public ActionResult<IEnumerable<Queue>> GetQueues()
         {
-            return Ok("all the queues");
+            var result = new List<Queue>();
+
+            return Ok(result);
         }
 
         // api/queue/5
         [HttpGet("{queueId}")]
-        public ActionResult GetQueue(int queueId)
+        public ActionResult<Queue> GetQueue(int queueId)
         {
-            return Ok($"queue with id {queueId}");
+            var result = new Queue();
+
+            return Ok(result);
         }
 
         // api/queue/
         [HttpPost]
-        public ActionResult CreateQueue(object queue) //TODO: return created entity
+        public ActionResult CreateQueue(Queue queue) //TODO: return created entity
         {
             return NoContent();
         }
 
         // api/queue/5
         [HttpPut("{queueId}")]
-        public ActionResult UpdateQueue(int queueId, object queue)
+        public ActionResult UpdateQueue(int queueId, Queue queue)
         {
             return NoContent();
         }
 
         // api/queue/5/items
         [HttpPut("{queueId}/includeItems")]
-        public ActionResult UpdateQueueWithItems([FromRoute] int queueId, object queue)
+        public ActionResult UpdateQueueWithItems([FromRoute] int queueId, Queue queue)
         {
             return NoContent();
         }
