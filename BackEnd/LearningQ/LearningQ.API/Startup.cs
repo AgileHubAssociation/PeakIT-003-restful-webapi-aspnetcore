@@ -45,7 +45,10 @@ namespace LearningQ.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                dbContext.Database.EnsureCreated(); // in case we switch branch in loose the DB
+
+                // in case we switch branch in loose the DB
+                // this needs to be commented when applying migrations
+                dbContext.Database.EnsureCreated(); 
             }
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
@@ -53,10 +56,11 @@ namespace LearningQ.API
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
             // specifying the Swagger JSON endpoint.
-            // by default it can be accessed via the /swagger route
+            // by default it can be accessed via the / route
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "LeaningQ V1");
+                c.RoutePrefix = ""; // serve swagger from the root of the domain
             });
 
             app.UseRouting();

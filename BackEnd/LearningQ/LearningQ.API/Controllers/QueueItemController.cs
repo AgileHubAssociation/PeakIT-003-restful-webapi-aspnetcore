@@ -69,6 +69,12 @@ namespace LearningQ.API.Controllers
         [HttpPost]
         public ActionResult<ItemRead> CreateItem(int queueId, ItemCreate item) //TODO: return created entity
         {
+
+            if (!TryValidateModel(item))
+            {
+                return ValidationProblem(ModelState);
+            }
+
             var queueFromRepo = _repo.GetQueueById(queueId);
 
             if (queueFromRepo == null)
@@ -90,6 +96,11 @@ namespace LearningQ.API.Controllers
         [HttpPut("{itemId:int:min(1)}")]
         public ActionResult UpdateItem(int queueId, int itemId, ItemUpdate item)
         {
+            if (!TryValidateModel(item))
+            {
+                return ValidationProblem(ModelState);
+            }
+
             var queueFromRepo = _repo.GetQueueById(queueId);
 
             if (queueFromRepo == null)

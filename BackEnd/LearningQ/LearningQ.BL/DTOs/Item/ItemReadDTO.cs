@@ -20,10 +20,18 @@ namespace LearningQ.BL.DTOs.Item
         public TimeSpan ModifiedAgo => DateTime.Now.Subtract(ModifiedDate);
 
         public string Name { get; set; }
+
         public string Description { get; set; }
+
         public string URL { get; set; }
+
+        [JsonIgnore]
         public Difficulty Difficulty { get; set; }
+
+        public string DifficultyDisplay => Difficulty.ToString();
+
         public int Priority { get; set; }
+
         public float Progress { get; set; }
     }
 }

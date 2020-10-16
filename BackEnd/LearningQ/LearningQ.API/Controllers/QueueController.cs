@@ -58,6 +58,11 @@ namespace LearningQ.API.Controllers
         [HttpPost]
         public ActionResult<QueueRead> CreateQueue(QueueCreate queue) //TODO: return created entity
         {
+            if (!TryValidateModel(queue))
+            {
+                return ValidationProblem(ModelState);
+            }
+
             var queueToAdd = _mapper.Map<Queue>(queue); // destination <- source
 
             _repo.AddQueue(queueToAdd);
@@ -72,6 +77,12 @@ namespace LearningQ.API.Controllers
         [HttpPut("{queueId:int:min(1)}")]
         public ActionResult UpdateQueue(int queueId, QueueUpdate queue)
         {
+            
+            if (!TryValidateModel(queue))
+            {
+                return ValidationProblem(ModelState);
+            }
+
             var queueFromRepo = _repo.GetQueueById(queueId);
 
             if (queueFromRepo == null)
@@ -91,6 +102,11 @@ namespace LearningQ.API.Controllers
         [HttpPut("{queueId:int:min(1)}/includeItems")]
         public ActionResult UpdateQueueWithItems([FromRoute] int queueId, QueueUpdateWithItems queue)
         {
+            if (!TryValidateModel(queue))
+            {
+                return ValidationProblem(ModelState);
+            }
+
             var queueFromRepo = _repo.GetQueueById(queueId);
 
             if (queueFromRepo == null)
@@ -108,7 +124,7 @@ namespace LearningQ.API.Controllers
 
         // api/queue/5/items
         [HttpPatch("{queueId:int:min(1)}")]
-        public ActionResult PartialUpdateQueue([FromRoute] int queueId,  JsonPatchDocument<QueueUpdate> patchDoc)
+        public ActionResult PartialUpdateQueue([FromRoute] int queueId, JsonPatchDocument<QueueUpdate> patchDoc)
         {
             var queueFromRepo = _repo.GetQueueById(queueId);
 
