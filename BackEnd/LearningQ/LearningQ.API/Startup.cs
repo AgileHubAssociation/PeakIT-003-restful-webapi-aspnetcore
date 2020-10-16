@@ -26,6 +26,8 @@ namespace LearningQ.API
             services.AddDbContext<QueueDbContext>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("SQLiteConnection")));
 
+            services.AddCors();
+
             services.AddControllers();
 
             // services.AddSingleton<IRepository, MockRepository>();
@@ -58,6 +60,18 @@ namespace LearningQ.API
             });
 
             app.UseRouting();
+
+            
+            app.UseCors(
+                options => options.WithOrigins("http://example.com", "http://www.example.com").AllowAnyMethod()
+            );
+
+            //// global cors policy (unsecure but easy, could be used for a hackathon or smth)
+            //app.UseCors(x => x
+            //    .AllowAnyMethod()
+            //    .AllowAnyHeader()
+            //    .SetIsOriginAllowed(origin => true) // allow any origin
+            //    .AllowCredentials()); // allow credentials
 
             app.UseAuthorization();
 
