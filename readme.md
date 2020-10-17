@@ -1,4 +1,4 @@
->![keynote_cover (1)](C:\Users\Florin\Pictures\keynote_cover (1).jpg)
+>![keynote_cover (1)](https://i.ibb.co/GvnbWBt/keynote-cover.jpg)
 
 
 
