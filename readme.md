@@ -2,4 +2,7 @@
 
 
 
-Presentation: http://bit.ly/peakit003-dotnetrest 
+Code from [PeakIt003 ](https://peakit.ro/speaker/florin-asavei-2/) by [AgileHub](https://agilehub.ro/)
+
+Presentation: [http://bit.ly/peakit003-dotnetrest ](http://bit.ly/peakit003-dotnetrest )
+
