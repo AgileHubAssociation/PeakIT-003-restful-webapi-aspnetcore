@@ -1,4 +1,4 @@
->![keynote_cover (1)](https://i.ibb.co/GvnbWBt/keynote-cover.jpg)
+>![keynote_cover (1)](https://raw.githubusercontent.com/florinasavei/peakit003-dotnetrest/master/keynote_cover.jpg)
 
 
 
