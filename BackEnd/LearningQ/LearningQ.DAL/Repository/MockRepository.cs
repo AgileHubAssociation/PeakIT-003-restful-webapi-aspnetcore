@@ -73,7 +73,7 @@ namespace LearningQ.DAL.Repository
             //increment the id of the new items
             queue
                 .Items
-                .ForEach(t => 
+                ?.ForEach(t =>
                     t.Id = _queues
                             .SelectMany(x => x.Items)
                             .Max(m => m.Id) + queue.Items.IndexOf(t) + 1);
@@ -82,6 +82,10 @@ namespace LearningQ.DAL.Repository
 
         }
 
+        /// <summary>
+        /// Receives a new value that replaces the old
+        /// </summary>
+        /// <param name="queue"></param>
         public void UpdateQueue(Queue queue)
         {
             _queues[_queues.FindIndex(t => t.Id == queue.Id)] = queue;
@@ -121,6 +125,11 @@ namespace LearningQ.DAL.Repository
 
         }
 
+        /// <summary>
+        /// Receives a new value to be replaces
+        /// </summary>
+        /// <param name="queueId"></param>
+        /// <param name="item"></param>
         public void UpdateItemInQueue(int queueId, Item item)
         {
             var itemToUpdate =
@@ -130,11 +139,14 @@ namespace LearningQ.DAL.Repository
                     ?.FirstOrDefault(t => t.Id == item.Id);
 
             if (itemToUpdate == null)
-            { 
-                throw new NullReferenceException("item was not found");
+            {
+                throw new NullReferenceException("item was not found in queue");
             }
 
-            itemToUpdate = item;
+            var indexOfQueueToUpdate = _queues.FindIndex(t => t.Id == queueId);
+            var indexOfItemInQueueToUpdate = _queues[indexOfQueueToUpdate].Items.FindIndex(t => t.Id == item.Id);
+
+            _queues[indexOfQueueToUpdate].Items[indexOfItemInQueueToUpdate] = item;
         }
 
         public void DeleteItemFromQueue(int queueId, Item item)
@@ -148,8 +160,8 @@ namespace LearningQ.DAL.Repository
 
         public bool SaveChanges()
         {
-           //this does nothing but was added to respect the interface
-           return true;
+            //this does nothing but was added to respect the interface
+            return true;
         }
 
     }

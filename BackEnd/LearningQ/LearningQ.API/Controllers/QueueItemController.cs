@@ -32,51 +32,57 @@ namespace LearningQ.API.Controllers
 
             if (queueFromRepo == null)
             {
-                return NotFound("Queues does not exist!");
+                return NotFound();
             }
+            
+            var allItemFromQueueRepo = _repo.GetAllItemsFromQueue(queueId);
 
-            var itemsFromQueue = _repo.GetAllItemsFromQueue(queueId);
+            var itemsFromQueForDisplay = _mapper.Map<IEnumerable<ItemRead>>(allItemFromQueueRepo);
 
-            var itemForDisplay = _mapper.Map<IEnumerable<ItemRead>>(itemsFromQueue);
-
-            return Ok(itemForDisplay);
+            return Ok(itemsFromQueForDisplay);
         }
 
         // api/queue/5/item/7 
-        [HttpGet("{itemId:int:min(1)}", Name = nameof(GetItem))]
+        [HttpGet("{itemId:int:min(1)}")]
         public ActionResult<ItemRead> GetItem(int queueId, int itemId)
         {
             var queueFromRepo = _repo.GetQueueById(queueId);
 
             if (queueFromRepo == null)
             {
-                return NotFound("Queues does not exist!");
+                return NotFound();
             }
 
-            var itemFromQueue = _repo.GetItemFomQueueById(queueId, itemId);
+            var itemFromQueueRepo = _repo.GetItemFomQueueById(queueId, itemId);
 
-            if (itemFromQueue == null)
+            if (itemFromQueueRepo == null)
             {
                 return NotFound();
             }
 
-            var itemForDisplay = _mapper.Map<ItemRead>(itemFromQueue);
+            var itemFromQueueForDisplay = _mapper.Map<ItemRead>(itemFromQueueRepo);
 
-            return Ok(itemForDisplay);
+            return Ok(itemFromQueueForDisplay);
         }
 
         // api/queue/5/item/
         [HttpPost]
-        public ActionResult CreateItem(int queueId, ItemCreate item)  //TODO: return the created item
+        public ActionResult<ItemRead> CreateItem(int queueId, ItemCreate item) //TODO: return created entity
         {
-            var itemToAdd = _mapper.Map<Item>(item); // destination <- source
+
+            if (!TryValidateModel(item))
+            {
+                return ValidationProblem(ModelState);
+            }
 
             var queueFromRepo = _repo.GetQueueById(queueId);
 
             if (queueFromRepo == null)
             {
-                return NotFound("Queues does not exist!");
+                return NotFound();
             }
+
+            var itemToAdd = _mapper.Map<Item>(item); // destination <- source
 
             _repo.AddItemInQueue(queueId, itemToAdd);
             _repo.SaveChanges();
@@ -90,6 +96,18 @@ namespace LearningQ.API.Controllers
         [HttpPut("{itemId:int:min(1)}")]
         public ActionResult UpdateItem(int queueId, int itemId, ItemUpdate item)
         {
+            if (!TryValidateModel(item))
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            var queueFromRepo = _repo.GetQueueById(queueId);
+
+            if (queueFromRepo == null)
+            {
+                return NotFound();
+            }
+
             var itemFromQueueRepo = _repo.GetItemFomQueueById(queueId, itemId);
 
             if (itemFromQueueRepo == null)
@@ -105,36 +123,36 @@ namespace LearningQ.API.Controllers
             return NoContent();
         }
 
+        // api/queue/5/item/7 
         [HttpPatch("{itemId:int:min(1)}")]
         public ActionResult PartialUpdateIem(int queueId, int itemId, JsonPatchDocument<ItemUpdate> patchDoc)
         {
-            
             var queueFromRepo = _repo.GetQueueById(queueId);
 
             if (queueFromRepo == null)
             {
-                return NotFound("Queues does not exist!");
+                return NotFound();
             }
 
-            var itemFromRepo = _repo.GetItemFomQueueById(queueId, itemId);
+            var itemFromQueueRepo = _repo.GetItemFomQueueById(queueId, itemId);
 
-            if (itemFromRepo == null)
+            if (itemFromQueueRepo == null)
             {
                 return NotFound();
             }
 
-            var commandToPatch = _mapper.Map<ItemUpdate>(itemFromRepo);
+            var itemToPatch = _mapper.Map<ItemUpdate>(itemFromQueueRepo);
 
-            patchDoc.ApplyTo(commandToPatch, ModelState);
+            patchDoc.ApplyTo(itemToPatch, ModelState);
 
-            if (!TryValidateModel(commandToPatch))
+            if (!TryValidateModel(itemToPatch))
             {
                 return ValidationProblem(ModelState);
             }
 
-            _mapper.Map(commandToPatch, itemFromRepo); //source -> destination
+            _mapper.Map(itemToPatch, itemFromQueueRepo); //source -> destination
 
-            _repo.UpdateItemInQueue(itemId, itemFromRepo);
+            _repo.UpdateItemInQueue(queueId, itemFromQueueRepo);
             _repo.SaveChanges();
 
             return NoContent();
@@ -148,7 +166,7 @@ namespace LearningQ.API.Controllers
 
             if (queueFromRepo == null)
             {
-                return NotFound("Queues does not exist!");
+                return NotFound();
             }
 
             var itemFromQueueRepo = _repo.GetItemFomQueueById(queueId, itemId);

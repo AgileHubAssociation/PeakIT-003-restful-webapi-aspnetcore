@@ -8,7 +8,7 @@ namespace LearningQ.DAL.Repository
 {
     public class SQLiteRepository : IRepository
     {
-        private readonly QueueDbContext _context;
+        private QueueDbContext _context { get; set; }
 
         public SQLiteRepository(QueueDbContext context) //Dependency injection using concrete implementation
         {
@@ -19,17 +19,24 @@ namespace LearningQ.DAL.Repository
 
         public IEnumerable<Queue> GetAllQueues()
         {
-            return _context.Queues.ToList();
+            return _context
+                .Queues
+                .Include(t => t.Items)
+                .ToList();
         }
 
         public Queue GetQueueById(int id)
         {
-            return _context.Queues.FirstOrDefault(t => t.Id == id);
+            return _context
+                .Queues
+                .Include(t => t.Items)
+                .FirstOrDefault(t => t.Id == id);
         }
 
         public void AddQueue(Queue queue)
         {
-            _context.Queues.Add(queue);
+            _context.Queues
+                .Add(queue);
         }
 
         public void UpdateQueue(Queue queue)
@@ -103,7 +110,9 @@ namespace LearningQ.DAL.Repository
 
         public bool SaveChanges()
         {
-            return _context.SaveChanges() > 0;
+            var savedChanges = _context.SaveChanges();
+
+            return savedChanges > 0;
         }
 
     }

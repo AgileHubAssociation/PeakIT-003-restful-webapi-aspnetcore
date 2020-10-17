@@ -22,6 +22,6 @@ namespace LearningQ.DAL
 
         public DbSet<Queue> Queues { get; set; }
 
-       // public DbSet<Item> Items { get; set; } //it's not mandatory to map this because we don't use it by itself
+        // public DbSet<Item> Items { get; set; } //it's not mandatory to map this because we don't use it by itself
     }
 }

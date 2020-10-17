@@ -24,20 +24,17 @@ namespace LearningQ.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<QueueDbContext>(options =>
-              options.UseSqlite(Configuration.GetConnectionString("SQLiteConnection")));
+                options.UseSqlite(Configuration.GetConnectionString("SQLiteConnection")));
 
             services.AddCors();
 
-            services.AddControllers()
-                .AddNewtonsoftJson(x => // necessary for PATCH
-                    x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddControllers();
 
             // services.AddSingleton<IRepository, MockRepository>();
             services.AddScoped<IRepository, SQLiteRepository>();
 
-            // Register the Swagger generator, defining 1 or more Swagger documents
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             services.AddSwaggerGen();
 
         }
@@ -48,7 +45,10 @@ namespace LearningQ.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                dbContext.Database.EnsureCreated();
+
+                // in case we switch branch in loose the DB
+                // this needs to be commented when applying migrations
+                dbContext.Database.EnsureCreated(); 
             }
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
@@ -56,6 +56,7 @@ namespace LearningQ.API
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
             // specifying the Swagger JSON endpoint.
+            // by default it can be accessed via the / route
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "LeaningQ V1");
@@ -64,11 +65,12 @@ namespace LearningQ.API
 
             app.UseRouting();
 
+            
             app.UseCors(
                 options => options.WithOrigins("http://example.com", "http://www.example.com").AllowAnyMethod()
             );
 
-            //// global cors policy (unsecure but easy)
+            //// global cors policy (unsecure but easy, could be used for a hackathon or smth)
             //app.UseCors(x => x
             //    .AllowAnyMethod()
             //    .AllowAnyHeader()
@@ -77,7 +79,7 @@ namespace LearningQ.API
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>  
+            app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });

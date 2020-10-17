@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using AutoMapper;
 using LearningQ.BL.DTOs.Queue;
+using Microsoft.AspNetCore.Mvc;
 using LearningQ.BL.Models;
 using LearningQ.DAL.Repository;
 using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.Mvc;
 
 namespace LearningQ.API.Controllers
 {
@@ -15,6 +15,7 @@ namespace LearningQ.API.Controllers
     [Produces("application/json")]
     public class QueueController : ControllerBase
     {
+
         // read-only fields can only be assigned inside constructors
         private readonly IRepository _repo;
         private readonly IMapper _mapper;
@@ -25,18 +26,20 @@ namespace LearningQ.API.Controllers
             _mapper = mapper;
         }
 
+
         // api/queue
         [HttpGet]
         public ActionResult<IEnumerable<QueueRead>> GetQueues()
         {
-            var queuesFomRepo = _repo.GetAllQueues();
-            var queuesForDisplay = _mapper.Map<IEnumerable<QueueRead>>(queuesFomRepo);
+            var queuesFromRepo = _repo.GetAllQueues();
+
+            var queuesForDisplay = _mapper.Map<IEnumerable<QueueRead>>(queuesFromRepo);
 
             return Ok(queuesForDisplay);
         }
 
         // api/queue/5
-        [HttpGet("{queueId:int:min(1)}", Name = nameof(GetQueue))]
+        [HttpGet("{queueId:int:min(1)}")]
         public ActionResult<QueueRead> GetQueue(int queueId)
         {
             var queueFromRepo = _repo.GetQueueById(queueId);
@@ -53,8 +56,13 @@ namespace LearningQ.API.Controllers
 
         // api/queue/
         [HttpPost]
-        public ActionResult CreateQueue(QueueCreate queue)
+        public ActionResult<QueueRead> CreateQueue(QueueCreate queue) //TODO: return created entity
         {
+            if (!TryValidateModel(queue))
+            {
+                return ValidationProblem(ModelState);
+            }
+
             var queueToAdd = _mapper.Map<Queue>(queue); // destination <- source
 
             _repo.AddQueue(queueToAdd);
@@ -69,6 +77,12 @@ namespace LearningQ.API.Controllers
         [HttpPut("{queueId:int:min(1)}")]
         public ActionResult UpdateQueue(int queueId, QueueUpdate queue)
         {
+            
+            if (!TryValidateModel(queue))
+            {
+                return ValidationProblem(ModelState);
+            }
+
             var queueFromRepo = _repo.GetQueueById(queueId);
 
             if (queueFromRepo == null)
@@ -88,6 +102,11 @@ namespace LearningQ.API.Controllers
         [HttpPut("{queueId:int:min(1)}/includeItems")]
         public ActionResult UpdateQueueWithItems([FromRoute] int queueId, QueueUpdateWithItems queue)
         {
+            if (!TryValidateModel(queue))
+            {
+                return ValidationProblem(ModelState);
+            }
+
             var queueFromRepo = _repo.GetQueueById(queueId);
 
             if (queueFromRepo == null)
@@ -105,7 +124,7 @@ namespace LearningQ.API.Controllers
 
         // api/queue/5/items
         [HttpPatch("{queueId:int:min(1)}")]
-        public ActionResult PartialUpdateQueue(int queueId, JsonPatchDocument<QueueUpdate> patchDoc)
+        public ActionResult PartialUpdateQueue([FromRoute] int queueId, JsonPatchDocument<QueueUpdate> patchDoc)
         {
             var queueFromRepo = _repo.GetQueueById(queueId);
 
@@ -114,16 +133,16 @@ namespace LearningQ.API.Controllers
                 return NotFound();
             }
 
-            var commandToPatch = _mapper.Map<QueueUpdate>(queueFromRepo);
+            var queueToPatch = _mapper.Map<QueueUpdate>(queueFromRepo);
 
-            patchDoc.ApplyTo(commandToPatch, ModelState);
+            patchDoc.ApplyTo(queueToPatch, ModelState);
 
-            if (!TryValidateModel(commandToPatch))
+            if (!TryValidateModel(queueToPatch))
             {
                 return ValidationProblem(ModelState);
             }
 
-            _mapper.Map(commandToPatch, queueFromRepo); //source -> destination
+            _mapper.Map(queueToPatch, queueFromRepo); //source -> destination
 
             _repo.UpdateQueue(queueFromRepo);
             _repo.SaveChanges();

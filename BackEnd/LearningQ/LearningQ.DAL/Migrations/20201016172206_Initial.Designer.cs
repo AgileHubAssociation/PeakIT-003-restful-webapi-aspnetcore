@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LearningQ.DAL.Migrations
 {
     [DbContext(typeof(QueueDbContext))]
-    [Migration("20201014192947_IitialCreate")]
-    partial class IitialCreate
+    [Migration("20201016172206_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
