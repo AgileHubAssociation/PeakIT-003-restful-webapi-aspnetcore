@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LearningQ.Console
+namespace LearningQ.ConsoleDemo
 {
     class Program
     {

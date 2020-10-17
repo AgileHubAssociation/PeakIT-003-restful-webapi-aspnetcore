@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LearningQ.API", "LearningQ.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LearninQ.Simple", "LearninQ.Simple\LearninQ.Simple.csproj", "{F5A11236-83D9-4DEB-B28D-B094E91772CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearningQ.Console", "LearningQ.Console\LearningQ.Console.csproj", "{9C93E660-225C-4413-8554-680C251A48A1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearningQ.ConsoleDemo", "LearningQ.ConsoleDemo\LearningQ.ConsoleDemo.csproj", "{4A02F8E0-501A-400F-92E7-6AE15B10E953}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{F5A11236-83D9-4DEB-B28D-B094E91772CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5A11236-83D9-4DEB-B28D-B094E91772CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F5A11236-83D9-4DEB-B28D-B094E91772CC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9C93E660-225C-4413-8554-680C251A48A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9C93E660-225C-4413-8554-680C251A48A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9C93E660-225C-4413-8554-680C251A48A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9C93E660-225C-4413-8554-680C251A48A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A02F8E0-501A-400F-92E7-6AE15B10E953}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A02F8E0-501A-400F-92E7-6AE15B10E953}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A02F8E0-501A-400F-92E7-6AE15B10E953}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A02F8E0-501A-400F-92E7-6AE15B10E953}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
