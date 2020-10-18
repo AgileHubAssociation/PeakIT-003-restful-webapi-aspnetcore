@@ -42,9 +42,15 @@ namespace LearningQ.API.Controllers
             return NoContent();
         }
 
-        // api/queue/5/items
+
+        /// <summary>
+        ///  https://docs.microsoft.com/en-us/aspnet/core/mvc/models/model-binding?view=aspnetcore-3.1#sources
+        /// </summary>
+        /// <param name="queueId"></param>
+        /// <param name="queue"></param>
+        /// <returns></returns>
         [HttpPut("{queueId}/includeItems")]
-        public ActionResult UpdateQueueWithItems([FromRoute] int queueId, Queue queue)
+        public ActionResult UpdateQueueWithItems([FromRoute] int queueId, [FromBody]Queue queue) 
         {
             return NoContent();
         }
