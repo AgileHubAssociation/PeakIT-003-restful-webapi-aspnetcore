@@ -52,5 +52,13 @@ namespace LearningQ.API.Controllers
             return NoContent();
         }
 
+
+        [Route("/demostatus")] // override route
+        [HttpHead]
+        public ActionResult RandomCodeTest()
+        {
+            return StatusCode(424, new { someKey = "someValue" });
+        }
+
     }
 }
