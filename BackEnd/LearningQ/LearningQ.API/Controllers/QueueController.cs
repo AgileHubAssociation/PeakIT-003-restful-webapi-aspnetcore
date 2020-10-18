@@ -50,7 +50,7 @@ namespace LearningQ.API.Controllers
         /// <param name="queue"></param>
         /// <returns></returns>
         [HttpPut("{queueId}/includeItems")]
-        public ActionResult UpdateQueueWithItems([FromRoute] int queueId, [FromBody]Queue queue) 
+        public ActionResult UpdateQueueWithItems([FromRoute] int queueId, [FromBody] Queue queue)
         {
             return NoContent();
         }
@@ -62,6 +62,14 @@ namespace LearningQ.API.Controllers
         public ActionResult DeleteQueue(int queueId)
         {
             return NoContent();
+        }
+
+
+        [Route("/demostatus")] // override route
+        [HttpHead]
+        public ActionResult RandomCodeTest()
+        {
+            return StatusCode(424, new { someKey = "someValue" });
         }
 
     }
