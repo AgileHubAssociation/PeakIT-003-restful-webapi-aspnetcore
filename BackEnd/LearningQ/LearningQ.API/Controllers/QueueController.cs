@@ -77,7 +77,7 @@ namespace LearningQ.API.Controllers
         [HttpPut("{queueId:int:min(1)}")]
         public ActionResult UpdateQueue(int queueId, QueueUpdate queue)
         {
-            
+
             if (!TryValidateModel(queue))
             {
                 return ValidationProblem(ModelState);
@@ -98,9 +98,15 @@ namespace LearningQ.API.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// https://docs.microsoft.com/en-us/aspnet/core/mvc/models/model-binding?view=aspnetcore-3.1#sources
+        /// </summary>
+        /// <param name="queueId"></param>
+        /// <param name="queue"></param>
+        /// <returns></returns>
         // api/queue/5/items
         [HttpPut("{queueId:int:min(1)}/includeItems")]
-        public ActionResult UpdateQueueWithItems([FromRoute] int queueId, QueueUpdateWithItems queue)
+        public ActionResult UpdateQueueWithItems([FromRoute] int queueId, [FromBody] QueueUpdateWithItems queue)
         {
             if (!TryValidateModel(queue))
             {
@@ -165,6 +171,14 @@ namespace LearningQ.API.Controllers
             _repo.SaveChanges();
 
             return NoContent();
+        }
+
+
+        [Route("/demostatus")] // override route
+        [HttpHead]
+        public ActionResult RandomCodeTest()
+        {
+            return StatusCode(424, new { someKey = "someValue" });
         }
 
     }
