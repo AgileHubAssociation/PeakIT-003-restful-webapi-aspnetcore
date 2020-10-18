@@ -113,7 +113,6 @@ namespace LearningQ.API.Controllers
                 }).ToList()
             };
 
-
             _repo.AddQueue(queueToAdd);
 
             return NoContent();
@@ -121,7 +120,7 @@ namespace LearningQ.API.Controllers
 
         // api/queue/5
         [HttpPut("{queueId}")]
-        public ActionResult UpdateQueue(int queueId, QueueUpdate queue)
+        public ActionResult UpdateQueue([FromRoute] int queueId, [FromBody] QueueUpdate queue)
         {
             var queueFromRepo = _repo.GetQueueById(queueId);
 
@@ -139,6 +138,12 @@ namespace LearningQ.API.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// https://docs.microsoft.com/en-us/aspnet/core/mvc/models/model-binding?view=aspnetcore-3.1#sources
+        /// </summary>
+        /// <param name="queueId"></param>
+        /// <param name="queue"></param>
+        /// <returns></returns>
         // api/queue/5/items
         [HttpPut("{queueId}/includeItems")]
         public ActionResult UpdateQueueWithItems([FromRoute] int queueId, QueueUpdateWithItems queue)
@@ -188,6 +193,14 @@ namespace LearningQ.API.Controllers
 
             return NoContent();
         }
+
+        [Route("/demostatus")] // override route
+        [HttpHead]
+        public ActionResult RandomCodeTest()
+        {
+            return StatusCode(424, new { someKey = "someValue" });
+        }
+
 
     }
 }
