@@ -52,7 +52,7 @@ namespace LearningQ.API.Controllers
             return NoContent();
         }
 
-
+        [Route("/demostatus")] // override route
         [HttpHead]
         public ActionResult RandomCodeTest()
         {
